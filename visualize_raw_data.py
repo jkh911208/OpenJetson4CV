@@ -14,7 +14,6 @@ for data in raw_data:
 
 
     if cv2.waitKey(1) & 0xFF == ord('q'):
-        break
+		break
 
-#front_frame.release()
 cv2.destroyAllWindows()

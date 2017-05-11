@@ -6,8 +6,6 @@ Links:
     - [GoogLeNet Paper](http://www.cv-foundation.org/openaccess/content_cvpr_2015/papers/Szegedy_Going_Deeper_With_2015_CVPR_paper.pdf)
 """
 
-from __future__ import division, print_function, absolute_import
-
 import tflearn
 from tflearn.layers.core import input_data, dropout, fully_connected
 from tflearn.layers.conv import conv_2d, max_pool_2d, avg_pool_2d
@@ -16,8 +14,8 @@ from tflearn.layers.merge_ops import merge
 from tflearn.layers.estimator import regression
 
 
-def googlenet(width, height,ColorScale, LR):
-	network = input_data(shape=[None, width, height, ColorScale])
+def googlenet(width, height, LR):
+	network = input_data(shape=[None, width, height, 1])
 	conv1_7_7 = conv_2d(network, 64, 7, strides=2, activation='relu', name = 'conv1_7_7_s2')
 	pool1_3_3 = max_pool_2d(conv1_7_7, 3,strides=2)
 	pool1_3_3 = local_response_normalization(pool1_3_3)
@@ -128,13 +126,16 @@ def googlenet(width, height,ColorScale, LR):
 
 	pool5_7_7 = avg_pool_2d(inception_5b_output, kernel_size=7, strides=1)
 	pool5_7_7 = dropout(pool5_7_7, 0.4)
-	loss = fully_connected(pool5_7_7, 17,activation='softmax')
-	network = regression(loss, optimizer='momentum',
+	loss = fully_connected(pool5_7_7, 2,activation='softmax')
+	
+	network = regression(loss, optimizer='adam',
 	                     loss='categorical_crossentropy',
 	                     learning_rate=LR)
+
 	model = tflearn.DNN(network, checkpoint_path='model_googlenet',
 	                    max_checkpoints=1, tensorboard_verbose=2)
 	return model 
+
 '''
 model.fit(X, Y, n_epoch=1000, validation_set=0.1, shuffle=True,
           show_metric=True, batch_size=64, snapshot_step=200,
