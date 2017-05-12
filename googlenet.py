@@ -15,7 +15,7 @@ from tflearn.layers.estimator import regression
 
 
 def googlenet(width, height, LR):
-	network = input_data(shape=[None, width, height, 1])
+	network = input_data(shape=[None, width, height, 2])
 	conv1_7_7 = conv_2d(network, 64, 7, strides=2, activation='relu', name = 'conv1_7_7_s2')
 	pool1_3_3 = max_pool_2d(conv1_7_7, 3,strides=2)
 	pool1_3_3 = local_response_normalization(pool1_3_3)
